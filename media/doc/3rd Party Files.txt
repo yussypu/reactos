@@ -206,12 +206,6 @@ Used Version: 2012-05-03
 License: GPL-3.0-or-later (https://spdx.org/licenses/GPL-3.0-or-later.html)
 URL: http://savannah.gnu.org/projects/freefont/
 
-Title: GNU adns
-Path: sdk/lib/3rdparty/adns
-Used Version: 1.0 REV 5
-License: GPL-2.0-or-later (https://spdx.org/licenses/GPL-2.0-or-later.html)
-URL: http://www.gnu.org/software/adns/, http://adns.jgaa.com
-
 Title: CardLib
 Path: sdk/lib/3rdparty/cardlib
 Used Version: 2005-07-14
