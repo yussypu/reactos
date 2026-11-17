@@ -138,9 +138,6 @@ struct in_addr
 #define s_lh    S_un.S_un_b.s_b3
 };
 
-#define __LWIP_INET_H__
-#include "lwip/sockets.h"
-
 /* Sufficient information to manage the entity list */
 typedef struct {
     UINT tei_entity;
@@ -151,7 +148,6 @@ typedef struct {
 
 #ifndef htons
 #define htons(x) WH2N(x)
-#define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
 #endif
 
 /* Global variable */

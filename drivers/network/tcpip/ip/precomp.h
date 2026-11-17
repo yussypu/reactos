@@ -20,10 +20,6 @@
 #include <interface.h>
 #include <ports.h>
 #include <chew.h>
-#ifdef TCPIP_USE_FNET
 #include "fnet_glue/fnet_glue.h"
-#else
-#include "lwip_glue/lwip_glue.h"
-#endif
 
 #endif /* _IP_PCH_ */

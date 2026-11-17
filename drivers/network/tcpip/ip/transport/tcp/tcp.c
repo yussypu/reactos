@@ -16,16 +16,7 @@ LONG TCP_IPIdentification = 0;
 static BOOLEAN TCPInitialized = FALSE;
 PORT_SET TCPPorts;
 
-#ifdef TCPIP_USE_FNET
 #include <fnet_glue/fnet_glue.h>
-#else
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/init.h"
-#include "lwip/arch.h"
-
-#include <lwip_glue/lwip_glue.h>
-#endif
 
 NPAGED_LOOKASIDE_LIST TdiBucketLookasideList;
 
@@ -202,7 +193,7 @@ VOID TCPReceive(PIP_INTERFACE Interface, PIP_PACKET IPPacket)
  *     This is the low level interface for receiving TCP data
  */
 {
-    TI_DbgPrint(DEBUG_TCP,("Sending packet %d (%d) to lwIP\n",
+    TI_DbgPrint(DEBUG_TCP,("Sending packet %d (%d) to FNET\n",
                            IPPacket->TotalSize,
                            IPPacket->HeaderSize));
 
@@ -548,7 +539,6 @@ NTSTATUS TCPReceiveData
 
     NdisQueryBuffer(Buffer, &DataBuffer, &DataLen);
 
-#ifdef TCPIP_USE_FNET
     /* Held from the check to the queueing, so a receive event cannot fall in between */
     LockObject(Connection);
 
@@ -559,7 +549,6 @@ NTSTATUS TCPReceiveData
         LibTCPKickReceive(Connection);
     }
     else
-#endif
     Status = LibTCPGetDataFromConnectionQueue(Connection, DataBuffer, DataLen, &Received);
 
     if (Status == STATUS_PENDING)
@@ -569,9 +558,7 @@ NTSTATUS TCPReceiveData
         {
             TI_DbgPrint(DEBUG_TCP,("[IP, TCPReceiveData] Failed to allocate bucket\n"));
 
-#ifdef TCPIP_USE_FNET
             UnlockObject(Connection);
-#endif
             return STATUS_NO_MEMORY;
         }
 
@@ -592,9 +579,7 @@ NTSTATUS TCPReceiveData
         (*BytesReceived) = Received;
     }
 
-#ifdef TCPIP_USE_FNET
     UnlockObject(Connection);
-#endif
     return Status;
 }
 
@@ -612,10 +597,8 @@ NTSTATUS TCPSendData
 
     ReferenceObject(Connection);
 
-#ifdef TCPIP_USE_FNET
     /* Held from the send attempt to the queueing, so a send space event cannot fall in between */
     LockObject(Connection);
-#endif
 
     TI_DbgPrint(DEBUG_TCP,("[IP, TCPSendData] Called for %d bytes (on socket %x)\n",
                            SendLength, Connection->SocketContext));
@@ -639,9 +622,7 @@ NTSTATUS TCPSendData
         Bucket = ExAllocateFromNPagedLookasideList(&TdiBucketLookasideList);
         if (!Bucket)
         {
-#ifdef TCPIP_USE_FNET
             UnlockObject(Connection);
-#endif
             DereferenceObject(Connection);
             TI_DbgPrint(DEBUG_TCP,("[IP, TCPSendData] Failed to allocate bucket\n"));
             return STATUS_NO_MEMORY;
@@ -658,9 +639,7 @@ NTSTATUS TCPSendData
 
 
     TI_DbgPrint(DEBUG_TCP, ("[IP, TCPSendData] Leaving. Status = %x\n", Status));
-#ifdef TCPIP_USE_FNET
     UnlockObject(Connection);
-#endif
     DereferenceObject(Connection);
 
     return Status;

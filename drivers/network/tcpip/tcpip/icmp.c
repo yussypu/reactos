@@ -7,6 +7,7 @@
 
 #include "precomp.h"
 #include <checksum.h>
+#include <stdint.h>
 
 typedef struct _ICMP_PACKET_CONTEXT
 {

@@ -9,8 +9,7 @@
 
 #include <wdm.h>
 
-#define FOURCC(w,x,y,z) (((w) << 24) | ((x) << 16) | ((y) << 8) | (z))
-#define CHEW_TAG FOURCC('C','H','E','W')
+#define CHEW_TAG 'CHEW'
 
 PDEVICE_OBJECT WorkQueueDevice;
 LIST_ENTRY     WorkQueue;

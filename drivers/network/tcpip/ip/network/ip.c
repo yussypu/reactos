@@ -10,12 +10,6 @@
 
 #include "precomp.h"
 
-#define __LWIP_INET_H__
-#ifndef TCPIP_USE_FNET
-#include "lwip/netifapi.h"
-#endif
-
-
 LIST_ENTRY InterfaceListHead;
 KSPIN_LOCK InterfaceListLock;
 LIST_ENTRY NetTableListHead;
@@ -228,15 +222,6 @@ PIP_INTERFACE IPCreateInterface(
 
     TcpipInitializeSpinLock(&IF->Lock);
 
-#ifndef TCPIP_USE_FNET
-    IF->TCPContext = ExAllocatePool
-	( NonPagedPool, sizeof(struct netif));
-    if (!IF->TCPContext) {
-        ExFreePoolWithTag(IF, IP_INTERFACE_TAG);
-        return NULL;
-    }
-#endif
-
     TCPRegisterInterface(IF);
 
     InsertTDIInterfaceEntity( IF );
@@ -259,9 +244,6 @@ VOID IPDestroyInterface(
 
     TCPUnregisterInterface(IF);
 
-#ifndef TCPIP_USE_FNET
-    ExFreePool(IF->TCPContext);
-#endif
     ExFreePoolWithTag(IF, IP_INTERFACE_TAG);
 }
 

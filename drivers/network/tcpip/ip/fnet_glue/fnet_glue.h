@@ -1,7 +1,7 @@
 /*
  * PROJECT:     ReactOS TCP/IP protocol driver
  * LICENSE:     GPL-2.0-or-later (https://spdx.org/licenses/GPL-2.0-or-later)
- * PURPOSE:     FNET glue, same interface the lwIP glue gives the ReactOS TCP code
+ * PURPOSE:     FNET glue, the interface the ReactOS TCP code calls
  * COPYRIGHT:   Copyright 2026 yussypu
  */
 
@@ -11,9 +11,36 @@
 #include <tcpip.h>
 #include <fnet_ros_port.h>
 
-/* Type only lwIP headers for err_t, ERR_*, ip4_addr_t and u*_t; no lwIP code is built */
-#include "lwip/err.h"
-#include "lwip/ip_addr.h"
+/* The TCP code's result codes; the values are the ones TCPTranslateError expects */
+typedef INT8 err_t;
+
+#define ERR_OK          0
+#define ERR_MEM         -1
+#define ERR_BUF         -2
+#define ERR_TIMEOUT     -3
+#define ERR_RTE         -4
+#define ERR_INPROGRESS  -5
+#define ERR_VAL         -6
+#define ERR_WOULDBLOCK  -7
+#define ERR_USE         -8
+#define ERR_ALREADY     -9
+#define ERR_ISCONN      -10
+#define ERR_CONN        -11
+#define ERR_IF          -12
+#define ERR_ABRT        -13
+#define ERR_RST         -14
+#define ERR_CLSD        -15
+#define ERR_ARG         -16
+
+typedef UCHAR u8_t;
+typedef USHORT u16_t;
+typedef ULONG u32_t;
+
+/* IPv4 address in network order */
+typedef struct ip4_addr
+{
+    u32_t addr;
+} ip4_addr_t, ip_addr_t;
 
 #define FNET_GLUE_PCB_TAG       'pTNF'
 #define FNET_GLUE_IF_TAG        'fTNF'
